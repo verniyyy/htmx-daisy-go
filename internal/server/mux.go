@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/verniyyy/htmx-daisy-go/assets"
 	"github.com/verniyyy/htmx-daisy-go/internal/application/todo"
 	"github.com/verniyyy/htmx-daisy-go/internal/view"
 )
@@ -11,6 +12,8 @@ import (
 // NewMux creates a new HTTP ServeMux with a default route.
 func NewMux() *http.ServeMux {
 	r := NewRouter()
+
+	r.Get("/static/", http.StripPrefix("/static", http.FileServer(http.FS(assets.Assets))).ServeHTTP)
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")

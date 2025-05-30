@@ -1,0 +1,17 @@
+{
+  "name": "htmx-daisy-go",
+  "version": "1.0.0",
+  "description": "A simple TODO application built with [Golang](https://golang.org), [htmx](https://htmx.org), and [DaisyUI](https://daisyui.com/).",
+  "main": "index.js",
+  "scripts": {
+    "build:css": "npx @tailwindcss/cli -i tailwind.css -o assets/css/main.css"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.8",
+    "daisyui": "^5.0.43",
+    "tailwindcss": "^4.1.8"
+  }
+}
