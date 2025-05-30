@@ -2,6 +2,7 @@ package server
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
 	"github.com/verniyyy/htmx-daisy-go/assets"
@@ -46,4 +47,12 @@ func serveJSON(w http.ResponseWriter, statusCode int, data any) {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
+}
+
+// WithLog ...
+func WithLog(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		slog.InfoContext(r.Context(), r.Method, slog.String("url", r.URL.String()))
+		h.ServeHTTP(w, r)
+	})
 }

@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	mux := server.NewMux()
+	mux := server.WithLog(server.NewMux())
 	srv := server.NewHTTPServer(mux, "", 8080, func(ctx context.Context) {
 		slog.InfoContext(ctx, "Server is shutting down gracefully")
 	})
