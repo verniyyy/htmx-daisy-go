@@ -1,5 +1,19 @@
 package main
 
+import (
+	"context"
+	"log/slog"
+
+	"github.com/verniyyy/htmx-daisy-go/internal/server"
+)
+
 func main() {
-	println("Hello, htmx-daisy-go!")
+	mux := server.NewMux()
+	srv := server.NewHTTPServer(mux, "", 8080, func(ctx context.Context) {
+		slog.InfoContext(ctx, "Server is shutting down gracefully")
+	})
+
+	if err := srv.Serve(context.Background()); err != nil {
+		panic(err)
+	}
 }
