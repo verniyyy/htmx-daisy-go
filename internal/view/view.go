@@ -1,6 +1,9 @@
 package view
 
-import _ "embed"
+import (
+	"embed"
+	_ "embed"
+)
 
-//go:embed index.html
-var IndexHTML []byte
+//go:embed index.templ
+var IndexTemplate embed.FS

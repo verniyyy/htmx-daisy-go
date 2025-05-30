@@ -23,7 +23,7 @@ func (uc *ListUseCase) Execute() ([]TODO, error) {
 		{
 			ID:        2,
 			Title:     "Build a web app",
-			IsDone:    false,
+			IsDone:    true,
 			CreatedAt: time.Date(2023, 1, 2, 0, 0, 0, 0, time.UTC),
 			UpdatedAt: time.Date(2023, 1, 2, 0, 0, 0, 0, time.UTC),
 		},

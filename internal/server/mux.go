@@ -2,6 +2,7 @@ package server
 
 import (
 	"encoding/json"
+	"html/template"
 	"log/slog"
 	"net/http"
 
@@ -17,10 +18,27 @@ func NewMux() *http.ServeMux {
 	r.Get("/static/", http.StripPrefix("/static", http.FileServer(http.FS(assets.Assets))).ServeHTTP)
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		w.WriteHeader(http.StatusOK)
-		_, err := w.Write(view.IndexHTML)
+		// w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		// w.WriteHeader(http.StatusOK)
+
+		u := todo.NewListUseCase()
+		todos, err := u.Execute()
 		if err != nil {
+			slog.ErrorContext(r.Context(), "Failed to execute template", "error", err)
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			return
+		}
+
+		tmpl, err := template.New("index.templ").ParseFS(view.IndexTemplate, "index.templ")
+		if err != nil {
+			slog.ErrorContext(r.Context(), "Failed to execute template", "error", err)
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			return
+		}
+
+		args := map[string]any{"todos": todos}
+		if err := tmpl.Execute(w, args); err != nil {
+			slog.ErrorContext(r.Context(), "Failed to execute template", "error", err)
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 			return
 		}
