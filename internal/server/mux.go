@@ -18,9 +18,6 @@ func NewMux() *http.ServeMux {
 	r.Get("/static/", http.StripPrefix("/static", http.FileServer(http.FS(assets.Assets))).ServeHTTP)
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		// w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		// w.WriteHeader(http.StatusOK)
-
 		u := todo.NewListUseCase()
 		todos, err := u.Execute()
 		if err != nil {
@@ -36,12 +33,7 @@ func NewMux() *http.ServeMux {
 			return
 		}
 
-		args := map[string]any{"todos": todos}
-		if err := tmpl.Execute(w, args); err != nil {
-			slog.ErrorContext(r.Context(), "Failed to execute template", "error", err)
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-			return
-		}
+		render(w, http.StatusOK, tmpl, map[string]any{"todos": todos})
 	})
 
 	r.Get("/todos", func(w http.ResponseWriter, r *http.Request) {
@@ -58,6 +50,14 @@ func NewMux() *http.ServeMux {
 	return r.ServeMux
 }
 
+// WithLog ...
+func WithLog(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		slog.InfoContext(r.Context(), r.Method, slog.String("url", r.URL.String()))
+		h.ServeHTTP(w, r)
+	})
+}
+
 func serveJSON(w http.ResponseWriter, statusCode int, data any) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(statusCode)
@@ -67,10 +67,11 @@ func serveJSON(w http.ResponseWriter, statusCode int, data any) {
 	}
 }
 
-// WithLog ...
-func WithLog(h http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		slog.InfoContext(r.Context(), r.Method, slog.String("url", r.URL.String()))
-		h.ServeHTTP(w, r)
-	})
+func render(w http.ResponseWriter, statusCode int, tmpl *template.Template, data any) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.WriteHeader(statusCode)
+	if err := tmpl.Execute(w, data); err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
 }
