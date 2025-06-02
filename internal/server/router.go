@@ -58,5 +58,5 @@ func (r *Router) Trace(pattern string, handler func(http.ResponseWriter, *http.R
 }
 
 func (r *Router) route(method, pattern string, handler func(http.ResponseWriter, *http.Request)) {
-	r.ServeMux.HandleFunc(http.MethodGet+" "+pattern, handler)
+	r.ServeMux.HandleFunc(method+" "+pattern, handler)
 }
