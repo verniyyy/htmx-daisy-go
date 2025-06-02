@@ -11,6 +11,8 @@ import (
 	"github.com/verniyyy/htmx-daisy-go/internal/view"
 )
 
+var indexHTML = template.Must(template.New("index.templ").ParseFS(view.IndexTemplate, "index.templ"))
+
 // NewMux creates a new HTTP ServeMux with a default route.
 func NewMux() *http.ServeMux {
 	r := NewRouter()
@@ -26,14 +28,7 @@ func NewMux() *http.ServeMux {
 			return
 		}
 
-		tmpl, err := template.New("index.templ").ParseFS(view.IndexTemplate, "index.templ")
-		if err != nil {
-			slog.ErrorContext(r.Context(), "Failed to execute template", "error", err)
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-			return
-		}
-
-		render(w, http.StatusOK, tmpl, todos)
+		render(w, http.StatusOK, indexHTML, todos)
 	})
 
 	r.Get("/todos", func(w http.ResponseWriter, r *http.Request) {
