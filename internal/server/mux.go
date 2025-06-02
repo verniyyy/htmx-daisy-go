@@ -33,7 +33,7 @@ func NewMux() *http.ServeMux {
 			return
 		}
 
-		render(w, http.StatusOK, tmpl, map[string]any{"todos": todos})
+		render(w, http.StatusOK, tmpl, todos)
 	})
 
 	r.Get("/todos", func(w http.ResponseWriter, r *http.Request) {

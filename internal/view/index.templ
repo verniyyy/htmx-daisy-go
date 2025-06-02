@@ -20,7 +20,7 @@
         </tr>
       </thead>
       <tbody>
-        {{ range .todos }}
+        {{ range . }}
         <tr id="todo-{{ .ID }}">
           <td>{{ .ID }}</td>
           <td>{{ .Title }}</td>
