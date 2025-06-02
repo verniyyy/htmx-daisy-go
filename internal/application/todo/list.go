@@ -27,6 +27,13 @@ func (uc *ListUseCase) Execute() ([]TODO, error) {
 			CreatedAt: time.Date(2023, 1, 2, 0, 0, 0, 0, time.UTC),
 			UpdatedAt: time.Date(2023, 1, 2, 0, 0, 0, 0, time.UTC),
 		},
+		{
+			ID:        3,
+			Title:     "Deploy to production",
+			IsDone:    false,
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+		},
 	}
 
 	return todos, nil
